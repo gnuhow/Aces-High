@@ -3,6 +3,9 @@
 # Setup instructions for my deployment VM
 # RHEL 9 Server with GUI
 
+$project_name = "Aces-High"
+$working_dir = "/opt/$project_name"
+
 # First update Oracle VirtualBox
 
 # update RHEL and install dependencies
@@ -41,6 +44,10 @@ rm /home/gnuhow/Downloads/code-1.96.2-1734607808.el8.x86_64.rpm
 # Terraform
 dnf config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
 dnf install -y terraform
+
+cd "$working_dir/terraform"
+terraform init
+cd "$working_dir"
 
 # AWS CLI
 yum install -y awscli2
