@@ -15,3 +15,32 @@ variable "deploy_tag" {
   type        = string
   default     = "tf"
 }
+
+variable "region" {
+  description = "AWS Region"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "azs" {
+  description = "List of AWS Availability Zones"
+  type = list(string)
+  default = ["us-east-1a", "us-east-1b", "us-east-1c"]
+}
+variable "az_a" {
+  description = "First AWS Availability Zone"
+  type        = string
+  default     = "us-east-1a"
+}
+
+variable "az_b" {
+  description = "First AWS Availability Zone"
+  type        = string
+  default     = "us-east-1b"
+}
+
+variable "az_c" {
+  description = "First AWS Availability Zone"
+  type        = string
+  default     = "us-east-1c"
+}
