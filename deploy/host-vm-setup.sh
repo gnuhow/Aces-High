@@ -54,3 +54,6 @@ yum install -y awscli2
 
 # use buildah for making container images
 yum -y install buildah
+
+# yum install npm
+dnf install nodejs
