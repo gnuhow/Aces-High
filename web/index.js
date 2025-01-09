@@ -1,5 +1,8 @@
 const Max16BitInt = 65535; // 2 ** 16 -1
 const DoTrueRandomShuffle = true;
+const PlayerCount = 1;
+const DeckCount = 1;
+const MininumCards = 20;  // How low the deck will get before a reshuffle. 
 
 const Deck = [
         { face: "2",    suit: "spade",      color: "black"  },
@@ -68,6 +71,11 @@ const Deck = [
         { face: "A",    suit: "club",       color: "black"  }
     ];
 
+let GameState = {
+    deck: [],
+    players: []
+}
+
 
 function printCard(card) {
     let printStr;
@@ -93,6 +101,7 @@ function printDeck(deck) {
     }
     console.dir(resultDeck);
 }
+
 
 // Returns between 0 and 1
 function trueRandomNumber() {
@@ -125,6 +134,17 @@ function shuffle(array) {
 }
 
 
+function newDeck(gameState) {
+    gameState.deck = [];
+    for (let deckNumber = 0; deckNumber < DeckCount; deckNumber++) {
+        let deck = structuredClone(Deck);
+        deck = shuffle(deck);
+        gameState.deck.push(deck);
+    }
+    return gameState;
+}
+
+
 function draw(deck) {
     const position = deck.length - 1;
     card = deck[position];
@@ -133,49 +153,117 @@ function draw(deck) {
 }
 
 
-function deal(gameState) {
-    gameState.playerUpCards = [draw(deck)];
-    gameState.dealerUpCards = [draw(deck)];
-    gameState.playerDownCards = [draw(deck)];
-    gameState.dealerDownCards = [draw(deck)];
+function deal(gameState, playerCount) {
+    for (let n = 0; n < playerCount; n++) {
+        gameState.players.push({ 
+            name: `Player${n}`,
+            upCards: [draw(gameState.deck)]
+        });
+    }
+    gameState.players.push({
+        name: "Dealer",
+        upCards: [draw(gameState.deck)]
+    });
+        
+    for (let n = 0; n < playerCount; n++) {
+        gameState.players[n].downCards = [draw(gameState.deck)];
+    }
+    gameState.players[playerCount].downCards = [draw(gameState.deck)];
+    return gameState;
+}
+
+
+function countHand(gameState) {
+    let playerCount = 0;
+    for (const player of gameState.players) {
+        let aceCount = 0;
+        let playerHandSum = 0;
+        let cards = player.upCards.concat(player.downCards)
+        
+        for (const card of cards) {
+            let value = 0;
+            if      (card.face === "J") { value = 10; }
+            else if (card.face === "Q") { value = 10; }
+            else if (card.face === "K") { value = 10; }
+            else if (card.face === "A") { aceCount++; }
+            else { value = Number(card.face) }
+            playerHandSum = playerHandSum + value;
+        }
+
+        if (playerHandSum + aceCount - 1 + 11 <= 21 ) {
+            playerHandSum = playerHandSum + aceCount + 10;
+        } 
+        else {
+            playerHandSum = playerHandSum + aceCount;
+        }
+        gameState.players[playerCount].value = playerHandSum;
+        playerCount++;
+    }
+    return gameState;
+}
+
+
+function hit(gameState, playerNumber) {
+    card = draw(gameState.deck);
+    gameState.players[playerNumber].upCards.push(card);
     return gameState;
 }
 
 
 function test() {
-    // test printDeck
-    printDeck(Deck);
+    // console.log('Test Print Deck')
+    // printDeck(Deck);
 
-    // test trueRandomNumber
-    console.log('Test trueRandomNumber')
-    let trueRandomNumbers = [];
-    for (let i = 0; i < 100; i++) {
-        const result = trueRandomNumber()
-        if (!((result >= 0) && (result <= 1))) {
-            console.error(`bad trueRandomNumber: ${result}`)
-        }
-        trueRandomNumbers.push(result);
-    }
-    console.log(trueRandomNumbers);
+    // console.log('Test trueRandomNumber')
+    // let trueRandomNumbers = [];
+    // for (let i = 0; i < 100; i++) {
+    //     const result = trueRandomNumber()
+    //     if (!((result >= 0) && (result <= 1))) {
+    //         console.error(`bad trueRandomNumber: ${result}`)
+    //     }
+    //     trueRandomNumbers.push(result);
+    // }
+    // console.log(trueRandomNumbers);
 
     let deck = structuredClone(Deck);
     deck = shuffle(deck);
     console.log('Test deck shuffling')
     printDeck(deck);
 
-    
-    console.log('Test drawing cards')
-    drawDeck = structuredClone(Deck);
-    results = [];
-    for (let i = 0; i < 51; i ++) { 
-        const drawCard = draw(drawDeck);
-        const bottomCard = printCard(drawDeck[drawDeck.length - 1]);
-        // console.log(`drawn card: ${printCard(drawCard)}, bottom card: ${bottomCard}`)
-        results.push(`drawn card: ${printCard(drawCard)}, bottom card: ${bottomCard}`)
-    }
-    console.dir(results);
-    console.log('Cards left in deck:');
-    console.dir(drawDeck);
+    console.log('Test making a new deck');
+    gameState = {};
+    gameState = newDeck(gameState);
+    console.dir(gameState);
+
+    // console.log('Test drawing cards')
+    // drawDeck = structuredClone(Deck);
+    // results = [];
+    // for (let i = 0; i < 51; i ++) { 
+    //     const drawCard = draw(drawDeck);
+    //     const bottomCard = printCard(drawDeck[drawDeck.length - 1]);
+    //     // console.log(`drawn card: ${printCard(drawCard)}, bottom card: ${bottomCard}`)
+    //     results.push(`drawn card: ${printCard(drawCard)}, bottom card: ${bottomCard}`)
+    // }
+    // console.dir(results);
+    // console.log('Cards left in deck:');
+    // console.dir(drawDeck);
+
+    console.log('Test deal cards');
+    let playerCount = PlayerCount;
+    let gameState = { 
+        deck: deck,
+        players: []
+    };
+    deal(gameState, playerCount);
+    console.dir(gameState);
+
+    console.log('Test hit');
+    gameState = hit(gameState, 0);
+    console.dir(gameState);
+
+    console.log('Test Count hands');
+    gameState = countHand(gameState);
+    console.dir(gameState);
 }
 
 test();
