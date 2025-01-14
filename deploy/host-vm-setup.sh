@@ -4,6 +4,7 @@
 # RHEL 9 Server with GUI
 
 $project_name = "Aces-High"
+$project_name_lower = "aces-high"
 $working_dir = "/opt/$project_name"
 
 # First update Oracle VirtualBox
@@ -50,10 +51,26 @@ terraform init
 cd "$working_dir"
 
 # AWS CLI
-yum install -y awscli2
+dnf install -y awscli2
 
-# use buildah for making container images
-yum -y install buildah
 
-# yum install npm
-dnf install nodejs
+# nodejs for testing JS 
+# https://developers.redhat.com/hello-world/nodejs
+# dnf module enable nodejs:20
+# dnf install -y nodejs
+# node --version
+
+
+# use buildah for making container images, with rootless support
+# use podman to run container images
+dnf install -y buildah podman
+
+cp -r app container
+cd container
+buildah build -t $project_name_lower
+
+podman images
+# podman container create localhost/aces-high:latest
+# podman container start localhost/aces-high:latest 
+
+podman run -p 8080:80 --rm $project_name_lower

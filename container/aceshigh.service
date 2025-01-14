@@ -1,0 +1,14 @@
+[Unit]
+Wants=network-online.target
+Description=Aces High Backend
+
+[Service]
+ExecStart=node app/main.js
+Restart=always
+User=nobody
+Group=nogroup
+Environment=PATH=/usr/bin:/usr/local/bin
+WorkingDirectory=/opt/Aces-High
+
+[Install]
+

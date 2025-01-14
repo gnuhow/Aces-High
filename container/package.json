@@ -1,0 +1,14 @@
+{
+  "name": "aces-high",
+  "version": "1.0.0",
+  "description": "Aces High",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "4.21"
+  }
+}
