@@ -1,13 +1,6 @@
-FROM docker.io/redhat/ubi9:latest
+FROM docker.io/node:20-alpine
 
-RUN echo "Install Node"
-RUN dnf module enable -y nodejs:20
-RUN dnf install -y nodejs
-RUN node --version
-
-RUN npm init
-RUN npm install express
-
+RUN ls
 
 EXPOSE 80
-CMD ["node app/main.js"]
+CMD ["main.js"]

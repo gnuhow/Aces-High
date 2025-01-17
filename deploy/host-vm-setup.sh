@@ -3,9 +3,9 @@
 # Setup instructions for my deployment VM
 # RHEL 9 Server with GUI
 
-$project_name = "Aces-High"
-$project_name_lower = "aces-high"
-$working_dir = "/opt/$project_name"
+project_name="Aces-High"
+project_name_lower="aces-high"
+working_dir="/opt/$project_name"
 
 # First update Oracle VirtualBox
 
@@ -34,7 +34,7 @@ yum -y install git
 cd /opt
 git clone https://github.com/gnuhow/Aces-High.git
 chown -R gnuhow Aces-High
-chown -R gnuhow Aces-High/*
+chown -R gnuhow Aces-High/*buildah build -t $project_name_lower
 
 # VS Code
 # in a browser: https://code.visualstudio.com/download
@@ -53,7 +53,7 @@ cd "$working_dir"
 # AWS CLI
 dnf install -y awscli2
 
-
+buildah build -t $project_name_lower
 # nodejs for testing JS 
 # https://developers.redhat.com/hello-world/nodejs
 # dnf module enable nodejs:20
@@ -69,8 +69,12 @@ cp -r app container
 cd container
 buildah build -t $project_name_lower
 
+# run images for testing
 podman images
 # podman container create localhost/aces-high:latest
 # podman container start localhost/aces-high:latest 
 
-podman run -p 8080:80 --rm $project_name_lower
+irewall-cmd --permanent --add-port=80/tcp
+irewall-cmd --permanent --add-port=8080/tcp
+
+podman run -p 80:80 --rm localhost/$project_name_lower
