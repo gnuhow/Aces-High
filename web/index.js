@@ -211,6 +211,12 @@ function hit(gameState, playerNumber) {
 
 
 function test() {
+    let deck = structuredClone(Deck);
+    let gameState = { 
+        deck: deck,
+        players: []
+    };
+
     // console.log('Test Print Deck')
     // printDeck(Deck);
 
@@ -225,7 +231,7 @@ function test() {
     // }
     // console.log(trueRandomNumbers);
 
-    let deck = structuredClone(Deck);
+    deck = structuredClone(Deck);
     deck = shuffle(deck);
     console.log('Test deck shuffling')
     printDeck(deck);
@@ -250,7 +256,7 @@ function test() {
 
     console.log('Test deal cards');
     let playerCount = PlayerCount;
-    let gameState = { 
+    gameState = { 
         deck: deck,
         players: []
     };

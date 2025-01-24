@@ -44,6 +44,8 @@ rm /home/gnuhow/Downloads/code-1.96.2-1734607808.el8.x86_64.rpm
 
 # Terraform
 dnf config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+chcon -u system_u -t system_conf_t /etc/yum.repos.d/hashicorp.repo
+restorecon -v /etc/yum.repos.d/hashicorp.repo
 dnf install -y terraform
 
 cd "$working_dir/terraform"
@@ -74,7 +76,7 @@ podman images
 # podman container create localhost/aces-high:latest
 # podman container start localhost/aces-high:latest 
 
-irewall-cmd --permanent --add-port=80/tcp
-irewall-cmd --permanent --add-port=8080/tcp
+firewall-cmd --permanent --add-port=80/tcp
+firewall-cmd --permanent --add-port=8080/tcp
 
 podman run -p 80:80 --rm localhost/$project_name_lower
